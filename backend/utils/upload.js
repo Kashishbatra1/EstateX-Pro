@@ -13,6 +13,31 @@ const UPLOADS_ROOT = path.join(__dirname, "..", "uploads");
 const MAX_DOCUMENT_BYTES = 10 * 1024 * 1024; // 10 MB
 const MAX_MEDIA_BYTES = 8 * 1024 * 1024; // 8 MB
 
+let _env = null;
+function getEnv() {
+  if (!_env) {
+    // Lazy require avoids circular init issues during env/db bootstrap
+    _env = require("../config/env");
+  }
+  return _env;
+}
+
+function assertLocalUploadsAvailable() {
+  if (getEnv().isServerless) {
+    throw new ApiError(
+      503,
+      "File uploads require persistent storage. Local disk uploads are unavailable on this serverless host. Configure cloud object storage (e.g. S3 or Vercel Blob) before using uploads in production.",
+      [
+        {
+          field: "file",
+          message:
+            "Persistent cloud storage is required for uploads on Vercel",
+        },
+      ]
+    );
+  }
+}
+
 const DOCUMENT_MIME = new Set([
   "application/pdf",
   "application/msword",
@@ -70,11 +95,16 @@ function isLocalUploadPath(filePath) {
 
 function createUploader({ subdir, allowedMimes, maxBytes }) {
   const dest = path.join(UPLOADS_ROOT, ...subdir.split("/").filter(Boolean));
-  ensureDir(dest);
 
   const storage = multer.diskStorage({
     destination(_req, _file, cb) {
-      cb(null, dest);
+      try {
+        assertLocalUploadsAvailable();
+        ensureDir(dest);
+        cb(null, dest);
+      } catch (err) {
+        cb(err);
+      }
     },
     filename(_req, file, cb) {
       const mime = file.mimetype;
@@ -93,6 +123,11 @@ function createUploader({ subdir, allowedMimes, maxBytes }) {
     storage,
     limits: { fileSize: maxBytes, files: 1 },
     fileFilter(_req, file, cb) {
+      try {
+        assertLocalUploadsAvailable();
+      } catch (err) {
+        return cb(err);
+      }
       if (!allowedMimes.has(file.mimetype)) {
         return cb(
           new ApiError(400, "Unsupported file type", [
@@ -163,6 +198,7 @@ function toStoredFileMeta(file, categoryFolder) {
 }
 
 function moveToEntityFolder(file, entityFolderParts) {
+  assertLocalUploadsAvailable();
   const destDir = path.join(UPLOADS_ROOT, ...entityFolderParts);
   ensureDir(destDir);
   const destAbs = path.join(destDir, file.filename);
@@ -194,4 +230,5 @@ module.exports = {
   toStoredFileMeta,
   moveToEntityFolder,
   sanitizeOriginalName,
+  assertLocalUploadsAvailable,
 };
