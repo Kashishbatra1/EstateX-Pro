@@ -1,0 +1,214 @@
+.login-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  background: #04070f;
+  color: #f8fafc;
+  isolation: isolate;
+}
+
+.login-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(45, 212, 191, 0.28), transparent 34%),
+    radial-gradient(circle at 86% 12%, rgba(194, 65, 12, 0.16), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(13, 148, 136, 0.12), transparent 40%),
+    linear-gradient(155deg, #060b16 0%, #0c1424 48%, #04070f 100%);
+  animation: drift 16s ease-in-out infinite alternate;
+}
+
+.login-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(circle at center, black 26%, transparent 76%);
+  opacity: 0.65;
+}
+
+@keyframes drift {
+  from {
+    transform: scale(1) translateY(0);
+  }
+  to {
+    transform: scale(1.05) translateY(-10px);
+  }
+}
+
+.login-panel {
+  position: relative;
+  z-index: 2;
+  width: min(460px, 100%);
+  display: grid;
+  gap: 1.4rem;
+  animation: rise 0.6s ease both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-brand {
+  text-align: center;
+  color: #f8fafc;
+}
+
+.login-brand__mark {
+  display: inline-block;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 14px;
+  margin-bottom: 1rem;
+  background: var(--brand-shine);
+  box-shadow: 0 18px 40px rgba(13, 148, 136, 0.45);
+  animation: pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.login-brand__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6.5vw, 3.35rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.login-brand__tagline {
+  margin: 0.65rem auto 0;
+  max-width: 32ch;
+  color: #94a3b8;
+  line-height: 1.5;
+  font-size: 0.98rem;
+  font-weight: 500;
+}
+
+.login-form {
+  display: grid;
+  gap: 1.05rem;
+  padding: 1.55rem 1.45rem 1.35rem;
+  border-radius: 22px;
+  background: #ffffff;
+  color: #0c1222;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(13, 148, 136, 0.08);
+}
+
+.login-form .field__label {
+  color: #334155;
+}
+
+.login-form .field input,
+.login-form .field select {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0 0.9rem;
+  background: #fff;
+  color: #0c1222;
+  font: inherit;
+}
+
+.login-form .btn--primary {
+  margin-top: 0.25rem;
+  width: 100%;
+  min-height: 48px;
+}
+
+.login-form__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.login-form__switch {
+  margin: 0.2rem 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.login-form__switch a {
+  color: var(--brand-deep);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.login-form__switch a:hover {
+  text-decoration: underline;
+}
+
+.login-form .field__password {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-form .field__password input {
+  width: 100%;
+  padding-right: 4.25rem;
+}
+
+.login-form .field__toggle {
+  position: absolute;
+  right: 0.45rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--brand-deep);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.35rem 0.55rem;
+  border-radius: 8px;
+}
+
+.login-form .field__toggle:hover:not(:disabled) {
+  background: var(--brand-soft);
+}
+
+.login-form .field__toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .login-form {
+    padding: 1.2rem;
+  }
+}
