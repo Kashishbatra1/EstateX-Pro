@@ -1,0 +1,32 @@
+# EstateX Pro — Render Blueprint (single deployment config file)
+# Native Node Web Service for the existing backend/ app (not Railpack).
+#
+# All Render service settings for this API live in this file:
+#   Root Directory : backend
+#   Build Command  : npm install
+#   Start Command  : npm start   →  node server.js
+#   Health Check   : /api/health
+#
+# Secrets use sync: false (set in Render Dashboard — never commit real values).
+
+services:
+  - type: web
+    name: estatex-pro-api
+    runtime: node
+    rootDir: backend
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_EXPIRES_IN
+        value: 8h
+      - key: JWT_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
